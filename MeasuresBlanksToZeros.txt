@@ -1,0 +1,24 @@
+=CALCULATE(SUM(Revenue[RevenueAmt]),PREVIOUSMONTH('Calendar'[FiscalMonth]))
+
+//=========================================================================
+ =IF ( CALCULATE(SUM(Revenue[RevenueAmt]),PREVIOUSMONTH('Calendar'[FiscalMonth])) = BLANK (),
+       0,
+       CALCULATE(SUM(Revenue[RevenueAmt]),PREVIOUSMONTH('Calendar'[FiscalMonth]))
+     )
+//=========================================================================
+NumberOfRuns =
+IF (
+    CALCULATE ( SUM ( 'MASCI vwPipelines'[C_NumRuns]) ) = BLANK (),
+    0,
+    CALCULATE ( SUM ('MASCI vwPipelines'[C_NumRuns]  ) )
+)
+//=========================================================================
+=VAR __PREV_MONTH = CALCULATE(SUM('Revenue'[RevenueAmt]), DATEADD('Calendar'[FiscalMonth], -1, MONTH)) 
+RETURN DIVIDE(SUM('Revenue'[RevenueAmt]) - __PREV_MONTH, __PREV_MONTH)
+//=========================================================================
+=  IF ( VAR __PREV_MONTH =CALCULATE(SUM('Revenue'[RevenueAmt]), DATEADD('Calendar'[FiscalMonth], -1, MONTH)) 
+                          RETURN DIVIDE(SUM('Revenue'[RevenueAmt]) - __PREV_MONTH, __PREV_MONTH) = BLANK (),
+                          0,
+                          VAR __PREV_MONTH =CALCULATE(SUM('Revenue'[RevenueAmt]), DATEADD('Calendar'[FiscalMonth], -1, MONTH)) 
+                          RETURN DIVIDE(SUM('Revenue'[RevenueAmt]) - __PREV_MONTH, __PREV_MONTH)
+                        )
